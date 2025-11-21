@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title id="page_title"></title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  >
+
+  <script defer src="currency.js"></script>
+  <script defer src="translation_calculator.js"></script>
+  <script defer src="calculator.js"></script>
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+  <div class="container-fluid d-flex justify-content-between">
+    <span class="navbar-brand" id="nav_title"></span>
+
+    <div>
+      <button class="btn btn-sm btn-light me-2" onclick="setLangCalc('en')">EN</button>
+      <button class="btn btn-sm btn-light" onclick="setLangCalc('ru')">RU</button>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      <!-- USER INPUTS -->
+      <div class="card p-4 mb-4">
+        <h2 id="input_title"></h2>
+
+        <!-- EV PRICE -->
+        <label class="form-label" id="ev_price_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="ev_price_symbol"></span>
+          <input id="ev_price" type="text" class="form-control" step="0.01">
+        </div>
+        <small id="ev_price_hint" class="text-muted"></small>
+
+        <!-- GAS PRICE -->
+        <label class="form-label mt-3" id="gas_price_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="gas_price_symbol"></span>
+          <input id="gas_price" type="text" class="form-control" step="0.01">
+        </div>
+        <small id="gas_price_hint" class="text-muted"></small>
+
+        <!-- ELECTRICITY PRICE -->
+        <label class="form-label mt-3" id="elec_price_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="elec_price_symbol"></span>
+          <input id="elec_price" type="text" class="form-control" step="0.01">
+        </div>
+        <small id="elec_price_hint" class="text-muted"></small>
+
+        <!-- DISTANCE (DAILY) -->
+        <label class="form-label mt-3" id="dist_day_label"></label>
+        <input id="dist_day" type="text" class="form-control mb-1" step="0.01">
+        <small id="dist_day_hint" class="text-muted"></small>
+
+        <!-- WEEKLY -->
+        <label class="form-label mt-3" id="dist_week_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="dist_week_calc"></span>
+          <input id="dist_week_extra" type="text" class="form-control" step="0.01">
+        </div>
+        <small id="dist_week_hint" class="text-muted"></small>
+
+        <!-- MONTHLY -->
+        <label class="form-label mt-3" id="dist_month_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="dist_month_calc"></span>
+          <input id="dist_month_extra" type="text" class="form-control" step="0.01">
+        </div>
+        <small id="dist_month_hint" class="text-muted"></small>
+
+      </div>
+
+      <!-- ESTIMATED VALUES -->
+      <div class="card p-4 mb-4">
+        <h3 id="estimate_title"></h3>
+
+        <label class="form-label" id="gas_fe_label"></label>
+        <input id="gas_fe" type="text" class="form-control mb-1" step="0.01" value="7.5">
+        <small id="gas_fe_hint" class="text-muted"></small>
+
+        <label class="form-label mt-3" id="ev_use_label"></label>
+        <input id="ev_use" type="text" class="form-control mb-1" step="0.01" value="15">
+        <small id="ev_use_hint" class="text-muted"></small>
+
+        <label class="form-label mt-3" id="maint_gas_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="maint_gas_symbol"></span>
+          <input id="maint_gas" type="text" class="form-control" step="0.01" value="500">
+        </div>
+        <small id="maint_gas_hint" class="text-muted"></small>
+
+        <label class="form-label mt-3" id="maint_ev_label"></label>
+        <div class="input-group mb-1">
+          <span class="input-group-text" id="maint_ev_symbol"></span>
+          <input id="maint_ev" type="text" class="form-control" step="0.01" value="200">
+        </div>
+        <small id="maint_ev_hint" class="text-muted"></small>
+
+      </div>
+
+      <button id="next_btn" class="btn btn-primary w-100 mt-2"></button>
+
+    </div>
+  </div>
+
+</div>
+
+<footer class="bg-dark text-light text-center py-4 mt-5">
+  <div>Made by Aidyn Ardabek</div>
+  <div class="mt-1">
+    <a href="https://www.linkedin.com/in/aidyn-ardabek" target="_blank" class="text-light me-3">
+      My LinkedIn</a>
+    <a href="https://github.com/YourGithubRepoHere" target="_blank" class="text-light">
+      GitHub (project repo)</a>
+  </div>
+</footer>
+
+
+
+</body>
+</html>
