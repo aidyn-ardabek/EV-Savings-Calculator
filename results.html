@@ -1,133 +1,125 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <meta charset="UTF-8" />
-  <title id="page_title"></title>
+    <meta charset="UTF-8" />
+    <title id="page_title"></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
 
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-  />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script defer src="currency.js"></script>
+    <script defer src="translation_results.js"></script>
+    <script defer src="results.js"></script>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script defer src="currency.js"></script>
-  <script defer src="translation_results.js"></script>
-  <script defer src="results.js"></script>
-
-  <style>
-    .legend-color {
-      display:inline-block;
-      width:14px;
-      height:14px;
-      background:#000;
-      margin-right:6px;
-      border-radius:2px;
-    }
-  </style>
+    <style>
+        .legend-color {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background: #000;
+            margin-right: 6px;
+            border-radius: 2px;
+        }
+    </style>
 </head>
 
 <body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid d-flex justify-content-between">
+            <span class="navbar-brand" id="nav_title"></span>
+            <div>
+                <button class="btn btn-sm btn-light me-2" onclick="setLangResults('en')">EN</button>
+                <button class="btn btn-sm btn-light" onclick="setLangResults('ru')">RU</button>
+            </div>
+        </div>
+    </nav>
 
-<nav class="navbar navbar-dark bg-dark mb-4">
-  <div class="container-fluid d-flex justify-content-between">
-    <span class="navbar-brand" id="nav_title"></span>
+    <div class="container mb-5">
+        <!-- TOP SUMMARY SECTION -->
+        <div class="p-4 mb-5 bg-white border border-dark rounded" id="top_summary_section">
+            <h2 id="top_summary_title" class="mb-3"></h2>
+            <div id="top_description_body"></div>
+            <div id="top_summary_body"></div>
+        </div>
 
-    <div>
-      <button class="btn btn-sm btn-light me-2" onclick="setLangResults('en')">EN</button>
-      <button class="btn btn-sm btn-light" onclick="setLangResults('ru')">RU</button>
+        <!-- GREEN SECTION (MAIN 4 CHARTS) -->
+        <div class="p-4 mb-5 rounded" style="background:#E8F5E9;">
+            <h2 id="all_charts_title"></h2>
+            <p id="all_charts_desc" class="text-muted mb-3"></p>
+
+            <!-- SECTION LEGEND (simple: EV electricity + Gas fuel) -->
+            <div id="legend_simple" class="mb-4"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_days_title"></h4>
+                        <canvas id="chart_days" height="140"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_weeks_title"></h4>
+                        <canvas id="chart_weeks" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_months_title"></h4>
+                        <canvas id="chart_months" height="140"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_years_title"></h4>
+                        <canvas id="chart_years" height="140"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRAY SECTION (MAINTENANCE CHARTS) -->
+        <div class="p-4 mb-5 rounded" style="background:#F3F4F6;">
+            <h2 id="maint_section_title"></h2>
+            <p id="maint_section_desc" class="text-muted mb-3"></p>
+
+            <!-- SECTION LEGEND (with maintenance: 4 colors) -->
+            <div id="legend_maint" class="mb-4"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_year_no_maint_title"></h4>
+                        <canvas id="chart_year_no_maint" height="160"></canvas>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="p-4 bg-white rounded shadow-sm">
+                        <h4 id="chart_year_with_maint_title"></h4>
+                        <canvas id="chart_year_with_maint" height="160"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-</nav>
 
-<div class="container mb-5">
-
-    <!-- TOP SUMMARY SECTION -->
-<div class="p-4 mb-5 bg-white border border-dark rounded" id="top_summary_section">
-  <h2 id="top_summary_title" class="mb-3"></h2>
-  <div id="top_description_body"></div>
-  <div id="top_summary_body"></div>
-</div>
-
-
-  <!-- GREEN SECTION (MAIN 4 CHARTS) -->
-  <div class="p-4 mb-5 rounded" style="background:#E8F5E9;">
-    <h2 id="all_charts_title"></h2>
-    <p id="all_charts_desc" class="text-muted mb-3"></p>
-
-    <!-- SECTION LEGEND (simple: EV electricity + Gas fuel) -->
-    <div id="legend_simple" class="mb-4"></div>
-
-    <div class="row">
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_days_title"></h4>
-          <canvas id="chart_days" height="140"></canvas>
+    <footer class="bg-dark text-light text-center py-4 mt-5">
+        <div>
+            Made by Aidyn Ardabek
         </div>
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_weeks_title"></h4>
-          <canvas id="chart_weeks" height="140"></canvas>
+        <div class="mt-1">
+            <a href="https://www.linkedin.com/in/aidyn-ardabek/" target="_blank" class="text-light me-3">My LinkedIn</a>
+            <a href="https://github.com/aidyn-ardabek/EV-Savings-Calculator" target="_blank" class="text-light">GitHub
+                (project repo)</a>
         </div>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_months_title"></h4>
-          <canvas id="chart_months" height="140"></canvas>
-        </div>
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_years_title"></h4>
-          <canvas id="chart_years" height="140"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- GRAY SECTION (MAINTENANCE CHARTS) -->
-  <div class="p-4 mb-5 rounded" style="background:#F3F4F6;">
-    <h2 id="maint_section_title"></h2>
-    <p id="maint_section_desc" class="text-muted mb-3"></p>
-
-    <!-- SECTION LEGEND (with maintenance: 4 colors) -->
-    <div id="legend_maint" class="mb-4"></div>
-
-    <div class="row">
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_year_no_maint_title"></h4>
-          <canvas id="chart_year_no_maint" height="160"></canvas>
-        </div>
-      </div>
-
-      <div class="col-md-6 mb-4">
-        <div class="p-4 bg-white rounded shadow-sm">
-          <h4 id="chart_year_with_maint_title"></h4>
-          <canvas id="chart_year_with_maint" height="160"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-</div>
-
-<footer class="bg-dark text-light text-center py-4 mt-5">
-  <div>Made by Aidyn Ardabek</div>
-  <div class="mt-1">
-    <a href="https://www.linkedin.com/in/aidyn-ardabek" target="_blank" class="text-light me-3">
-      LinkedIn
-    </a>
-    <a href="https://github.com/YourGithubRepoHere" target="_blank" class="text-light">
-      GitHub
-    </a>
-  </div>
-</footer>
+    </footer>
 
 </body>
+
 </html>
