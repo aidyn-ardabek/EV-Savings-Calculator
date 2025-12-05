@@ -1,6 +1,5 @@
 const translations_results = {
     en: {
-
         top_summary_title: "Overall Summary",
         top_description_body: "A full summary will be generated automatically based on your inputs.",
 
@@ -45,37 +44,15 @@ const translations_results = {
         x_months_label_prefix: "Month ",
         x_years_label_prefix: "Year ",
 
-        fuel_savings_title: "Fuel savings:",
-        fuel_savings_per_day: "Per day",
-        fuel_savings_per_week: "Per week",
-        fuel_savings_per_month: "Per month",
-        fuel_savings_per_year: "Per year",
-
-        maint_savings_title: "Savings including maintenance:",
-        maint_savings_year: "Maintenance per year",
-        maint_savings_total: "Total per year",
-
-        breakeven_positive: "The EV is financially better from the very first year.",
-        breakeven_negative: "The EV is not financially favorable under current costs.",
-
-        breakeven_title: "Breakeven:",
-        breakeven_prefix: "EV pays for itself in approximately",
-        breakeven_suffix: "year(s).",
-        breakeven_impossible: "The EV cannot pay for itself under current conditions.",
-
-        resale_title: "5-year resale scenario:",
-        resale_description_prefix: "If the owner sells the EV after 5 years at 50% of the purchase price, the net financial result is:",
-        resale_loss_prefix: "Total 5-year net loss:",
-        resale_gain_prefix: "Total 5-year net gain:",
-
-        resale_title_70: "5-year resale scenario (70%):",
-        resale_description_prefix_70: "If the owner sells the EV after 5 years at 70% of the purchase price, the net financial result is:",
-        resale_loss_prefix_70: "Total 5-year net loss:",
-        resale_gain_prefix_70: "Total 5-year net gain:"
+        // Inflation chart section
+        inflation_charts_title: "Cumulative Cost Comparison (With Inflation)",
+        chart_days_inf_title: "Days 1–7 (With Inflation)",
+        chart_weeks_inf_title: "Weeks 1–5 (With Inflation)",
+        chart_months_inf_title: "Months 1–12 (With Inflation)",
+        chart_years_inf_title: "Years 1–10 (With Inflation)"
     },
 
     ru: {
-
         top_summary_title: "Общая сводка",
         top_description_body: "Итоговая сводка будет автоматически рассчитана на основе ваших данных.",
 
@@ -116,32 +93,10 @@ const translations_results = {
         x_months_label_prefix: "Месяц ",
         x_years_label_prefix: "Год ",
 
-        fuel_savings_title: "Экономия на топливе:",
-        fuel_savings_per_day: "В день",
-        fuel_savings_per_week: "В неделю",
-        fuel_savings_per_month: "В месяц",
-        fuel_savings_per_year: "В год",
-
-        maint_savings_title: "Экономия с учётом обслуживания:",
-        maint_savings_year: "Обслуживание в год",
-        maint_savings_total: "Итого в год",
-
-        breakeven_positive: "EV выгоднее уже с первого года эксплуатации.",
-        breakeven_negative: "EV не выгоден при текущих затратах.",
-
-        breakeven_title: "Окупаемость:",
-        breakeven_prefix: "EV окупается примерно за",
-        breakeven_suffix: "год(а/лет).",
-        breakeven_impossible: "EV не окупится при текущих условиях.",
-
-        resale_title: "Сценарий перепродажи через 5 лет:",
-        resale_description_prefix: "Если владелец продаёт EV через 5 лет за 50% от начальной цены, итоговый финансовый результат составляет:",
-        resale_loss_prefix: "Итоговый убыток за 5 лет:",
-        resale_gain_prefix: "Итоговая выгода за 5 лет:",
-
-        resale_title_70: "Сценарий перепродажи через 5 лет (70%):",
-        resale_description_prefix_70: "Если владелец продаёт EV через 5 лет за 70% от начальной цены, итоговый финансовый результат составляет:",
-        resale_loss_prefix_70: "Итоговый убыток за 5 лет:",
-        resale_gain_prefix_70: "Итоговая выгода за 5 лет:"
+        inflation_charts_title: "Сравнение накопленных затрат (С учётом инфляции)",
+        chart_days_inf_title: "Дни 1–7 (С учётом инфляции)",
+        chart_weeks_inf_title: "Недели 1–5 (С учётом инфляции)",
+        chart_months_inf_title: "Месяцы 1–12 (С учётом инфляции)",
+        chart_years_inf_title: "Годы 1–10 (С учётом инфляции)"
     }
 };

@@ -37,7 +37,10 @@ const translations_calc = {
         maint_ev_label: "Maintenance (EV per year)",
         maint_ev_hint: "Typical: 100–300",
 
-        next_btn: "Next →"
+        next_btn: "Next →",
+
+        inflation_title: "Inflation for gas and electricity price",
+        inflation_description: "The program is considering this"
     },
 
     ru: {
@@ -78,6 +81,9 @@ const translations_calc = {
         maint_ev_label: "Обслуживание EV (в год)",
         maint_ev_hint: "Типично: 100–300",
 
-        next_btn: "Далее →"
+        next_btn: "Далее →",
+
+        inflation_title: "Inflation for gas and electricity price",
+        inflation_description: "The program is considering this"
     }
 };

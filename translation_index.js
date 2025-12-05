@@ -1,5 +1,5 @@
-const translations_index = {
-    en: {
+export const dictionary = {
+    EN: {
         page_title: "EV Savings Calculator",
         nav_title: "EV Savings Calculator",
 
@@ -21,7 +21,7 @@ const translations_index = {
         why_p1: "Designed for regions with limited accessible data."
     },
 
-    ru: {
+    RU: {
         page_title: "Сравнение электромобиля и бензина",
         nav_title: "EV vs Gas",
 

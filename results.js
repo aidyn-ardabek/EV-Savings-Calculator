@@ -24,14 +24,34 @@ function fmtCurrency(n) {
 let resultsLang = localStorage.getItem("lang") || "en";
 
 function applyResultsTranslations(lang) {
-    const dict = translations_results[lang];
+    const dict = translations_results[lang] || translations_results["en"];
 
+    // Apply every key that matches an element id
     for (const key in dict) {
         const el = document.getElementById(key);
         if (el) el.textContent = dict[key];
     }
 
-    document.title = dict.page_title;
+    // Set page title
+    if (dict.page_title) document.title = dict.page_title;
+
+    // Explicit inflation section title (no hard-coded suffix)
+    const infTitleEl = document.getElementById("inflation_charts_title");
+    if (infTitleEl && dict.inflation_charts_title) {
+        infTitleEl.textContent = dict.inflation_charts_title;
+    }
+
+    // Explicit per-chart inflation small titles from translations
+    const infChartIds = [
+        "chart_days_inf_title",
+        "chart_weeks_inf_title",
+        "chart_months_inf_title",
+        "chart_years_inf_title"
+    ];
+    infChartIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && dict[id]) el.textContent = dict[id];
+    });
 }
 
 function setLangResults(lang) {
@@ -53,7 +73,8 @@ let costSeries = null;
 function loadCalcData() {
     const raw = localStorage.getItem("calcData");
     if (!raw) {
-        alert("No calculator data found. Please fill the calculator first.");
+        const dict = translations_results[resultsLang] || translations_results["en"];
+        alert(dict.no_calc_data_alert || "No calculator data found.");
         window.location.href = "calculator.html";
         return null;
     }
@@ -70,12 +91,14 @@ function loadCalcData() {
         gas_fe: toNum(data.gas_fe),
         ev_use: toNum(data.ev_use),
         maint_gas: toNum(data.maint_gas),
-        maint_ev: toNum(data.maint_ev)
+        maint_ev: toNum(data.maint_ev),
+        // include saved inflation (%) — will be used to build inflation-based charts
+        inflation: toNum(data.inflation)
     };
 }
 
 //---------------------------------------------------------
-// Compute cost series
+// Compute cost series (original)
 //---------------------------------------------------------
 function buildCostSeries(input) {
     const {
@@ -150,10 +173,106 @@ function buildCostSeries(input) {
 }
 
 //---------------------------------------------------------
+// Helper: price with compound inflation
+//---------------------------------------------------------
+function priceWithInflation(basePrice, yearsElapsed, inflationPercent) {
+    const rate = 1 + inflationPercent / 100;
+    return basePrice * Math.pow(rate, yearsElapsed);
+}
+
+//---------------------------------------------------------
+// Compute cost series with inflation applied to prices
+//---------------------------------------------------------
+function buildCostSeriesWithInflation(input) {
+    const {
+        dist_day,
+        dist_week_extra,
+        dist_month_extra,
+        gas_fe,
+        ev_use,
+        elec_price,
+        gas_price,
+        inflation
+    } = input;
+
+    const Dday = dist_day;
+    const Dweek = dist_day * 7 + dist_week_extra;
+    const Dmonth = dist_day * 30 + dist_week_extra * 4.5 + dist_month_extra;
+    const Dyear = Dmonth * 12;
+
+    // Days 1–7 (elapsed years = n / 365)
+    const dayLabels = [];
+    const dayEv = [];
+    const dayGas = [];
+    for (let n = 1; n <= 7; n++) {
+        const d = Dday * n;
+        dayLabels.push(n);
+        const years = n / 365;
+        const elecP = priceWithInflation(elec_price, years, inflation);
+        const gasP = priceWithInflation(gas_price, years, inflation);
+        dayEv.push(d * (ev_use / 100) * elecP);
+        dayGas.push(d * (gas_fe / 100) * gasP);
+    }
+
+    // Weeks 1–5 (elapsed years = n / 52)
+    const weekLabels = [];
+    const weekEv = [];
+    const weekGas = [];
+    for (let n = 1; n <= 5; n++) {
+        const d = Dweek * n;
+        weekLabels.push(n);
+        const years = n / 52;
+        const elecP = priceWithInflation(elec_price, years, inflation);
+        const gasP = priceWithInflation(gas_price, years, inflation);
+        weekEv.push(d * (ev_use / 100) * elecP);
+        weekGas.push(d * (gas_fe / 100) * gasP);
+    }
+
+    // Months 1–12 (elapsed years = n / 12)
+    const monthLabels = [];
+    const monthEv = [];
+    const monthGas = [];
+    for (let n = 1; n <= 12; n++) {
+        const d = Dmonth * n;
+        monthLabels.push(n);
+        const years = n / 12;
+        const elecP = priceWithInflation(elec_price, years, inflation);
+        const gasP = priceWithInflation(gas_price, years, inflation);
+        monthEv.push(d * (ev_use / 100) * elecP);
+        monthGas.push(d * (gas_fe / 100) * gasP);
+    }
+
+    // Years 1–10 (elapsed years = n)
+    const yearLabels = [];
+    const yearEv = [];
+    const yearGas = [];
+    for (let n = 1; n <= 10; n++) {
+        const d = Dyear * n;
+        yearLabels.push(n);
+        const years = n;
+        const elecP = priceWithInflation(elec_price, years, inflation);
+        const gasP = priceWithInflation(gas_price, years, inflation);
+        yearEv.push(d * (ev_use / 100) * elecP);
+        yearGas.push(d * (gas_fe / 100) * gasP);
+    }
+
+    return {
+        Dyear,
+        dayLabels, dayEv, dayGas,
+        weekLabels, weekEv, weekGas,
+        monthLabels, monthEv, monthGas,
+        yearLabels, yearEv, yearGas
+    };
+}
+
+//---------------------------------------------------------
 // CHART handlers
 //---------------------------------------------------------
 let chartDays, chartWeeks, chartMonths, chartYears;
 let chartYearNoMaint, chartYearWithMaint;
+
+// Inflation charts
+let chartDaysInf, chartWeeksInf, chartMonthsInf, chartYearsInf;
 
 //---------------------------------------------------------
 // Inline legend generator
@@ -244,6 +363,31 @@ function buildMainCharts() {
     chartYears = makeSimpleBarChart(
         document.getElementById("chart_years"),
         s.yearLabels, s.yearEv, s.yearGas, "x_years_label_prefix"
+    );
+}
+
+//---------------------------------------------------------
+// Build inflation charts (same style but using inflation-based series)
+//---------------------------------------------------------
+function buildInflationCharts(infSeries) {
+    chartDaysInf = makeSimpleBarChart(
+        document.getElementById("chart_days_inf"),
+        infSeries.dayLabels, infSeries.dayEv, infSeries.dayGas, "x_days_label_prefix"
+    );
+
+    chartWeeksInf = makeSimpleBarChart(
+        document.getElementById("chart_weeks_inf"),
+        infSeries.weekLabels, infSeries.weekEv, infSeries.weekGas, "x_weeks_label_prefix"
+    );
+
+    chartMonthsInf = makeSimpleBarChart(
+        document.getElementById("chart_months_inf"),
+        infSeries.monthLabels, infSeries.monthEv, infSeries.monthGas, "x_months_label_prefix"
+    );
+
+    chartYearsInf = makeSimpleBarChart(
+        document.getElementById("chart_years_inf"),
+        infSeries.yearLabels, infSeries.yearEv, infSeries.yearGas, "x_years_label_prefix"
     );
 }
 
@@ -355,11 +499,12 @@ function buildMaintenanceCharts() {
 // Update chart labels when switching language
 //---------------------------------------------------------
 function updateChartLabels() {
-    const dict = translations_results[resultsLang];
+    const dict = translations_results[resultsLang] || translations_results["en"];
     if (!costSeries) return;
 
     const upd = (chart, labels, prefix) => {
-        chart.data.labels = labels.map(n => dict[prefix] + n);
+        if (!chart) return;
+        chart.data.labels = labels.map(n => (dict[prefix] || "") + n);
         chart.update();
     };
 
@@ -368,8 +513,15 @@ function updateChartLabels() {
     upd(chartMonths, costSeries.monthLabels, "x_months_label_prefix");
     upd(chartYears, costSeries.yearLabels, "x_years_label_prefix");
 
+    // Inflation charts (if present)
+    const infSeries = buildCostSeriesWithInflation(calcInput);
+    upd(chartDaysInf, infSeries.dayLabels, "x_days_label_prefix");
+    upd(chartWeeksInf, infSeries.weekLabels, "x_weeks_label_prefix");
+    upd(chartMonthsInf, infSeries.monthLabels, "x_months_label_prefix");
+    upd(chartYearsInf, infSeries.yearLabels, "x_years_label_prefix");
+
     const yearLabels = costSeries.yearLabels.map(
-        n => dict.x_years_label_prefix + n
+        n => (dict.x_years_label_prefix || "") + n
     );
 
     if (chartYearNoMaint) {
@@ -384,7 +536,7 @@ function updateChartLabels() {
 }
 
 function updateTopSummary(calcInput, costSeries) {
-    const dict = translations_results[resultsLang];
+    const dict = translations_results[resultsLang] || translations_results["en"];
 
     // Distances based on your model
     const Dday = calcInput.dist_day;
@@ -496,6 +648,7 @@ ${resaleHTML70}
 // INIT
 //---------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
+    // Apply translations first so loadCalcData can use them
     applyResultsTranslations(resultsLang);
 
     calcInput = loadCalcData();
@@ -505,6 +658,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     buildMainCharts();
     buildMaintenanceCharts();
+
+    // Build inflation-based series & charts
+    const infSeries = buildCostSeriesWithInflation(calcInput);
+    buildInflationCharts(infSeries);
 
     injectAllLegends();
     updateTopSummary(calcInput, costSeries);

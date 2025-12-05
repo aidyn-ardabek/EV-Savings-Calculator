@@ -1,14 +1,27 @@
-function setLang(lang) {
-    localStorage.setItem("lang", lang);
+// OVERVIEW ----------------------------------------------------------------------------------------------------
+// This file serves as a main javascript file for the index page
 
-    const dict = translations_index[lang];
-    for (const key in dict) {
-        const el = document.getElementById(key);
-        if (el) el.textContent = dict[key];
+// DEFAULT ----------------------------------------------------------------------------------------------------
+// The following has to run immediately after website is loaded.
+import {changeLanguage} from './utilities.js'
+
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // Translate the whole page or set a default language
+    changeLanguage()
+
+    // Load saved currency or default to EUR
+    const dropdown = document.getElementById("currency_select");
+    if (dropdown) {
+        const saved = localStorage.getItem("currency");
+        if (saved) dropdown.value = saved;
+
+        dropdown.addEventListener("change", () => {
+            localStorage.setItem("currency", dropdown.value);
+        });
     }
+});
 
-    loadCurrencyList();  // update dropdown with correct content
-}
 
 // Populate currency dropdown from currencyDB
 function loadCurrencyList() {
@@ -28,19 +41,4 @@ function loadCurrencyList() {
     if (saved) dropdown.value = saved;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    // Load saved language or default to English
-    const lang = localStorage.getItem("lang") || "en";
-    setLang(lang);
 
-    // Load saved currency or default to EUR
-    const dropdown = document.getElementById("currency_select");
-    if (dropdown) {
-        const saved = localStorage.getItem("currency");
-        if (saved) dropdown.value = saved;
-
-        dropdown.addEventListener("change", () => {
-            localStorage.setItem("currency", dropdown.value);
-        });
-    }
-});

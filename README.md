@@ -58,3 +58,26 @@ https://www.chartjs.org/docs/latest/getting-started/
 
 Useful links:
 https://pierreh.eu/ev-calc-app/?bs=52&bmuco2_nom=90&bmuco2_lb=60&bmuco2_ub=110&evc_nom=16&evc_lb=14&evc_ub=18&cl_nom=18&cl_lb=17&cl_ub=19&cco2_nom=60&cco2_lb=40&cco2_ub=80&icec_nom=6.0&icec_lb=5.0&icec_ub=7.0&gco2_nom=2.80&gco2_lb=2.75&gco2_ub=2.85&round=true
+
+So I couldn't find a free API for gas and electricity prices. So I removing default values since conversion between currencies and other stuff is a bit difficult.
+
+variables:
+
+carPrice_elec
+
+fuelPrice_elec
+fuelPrice_gas
+
+distance_day
+distance_week
+distance_month
+
+usage100km_gas
+usage100km_elec
+
+maintenance_gas
+maintenance_ev
+
+$$
+    day_{n,elec} = n \times \frac{[distance\_today_{day}]}{100km} \times \text{usage100km}_{gas}
+$$

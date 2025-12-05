@@ -135,7 +135,10 @@ function saveAndNext() {
         gas_fe: getRawNumber(gas_fe),
         ev_use: getRawNumber(ev_use),
         maint_gas: getRawNumber(maint_gas),
-        maint_ev: getRawNumber(maint_ev)
+        maint_ev: getRawNumber(maint_ev),
+
+        // Save the new inflation field (percent as number)
+        inflation: getRawNumber(inflation)
     };
 
     localStorage.setItem("calcData", JSON.stringify(data));
@@ -147,7 +150,6 @@ function saveAndNext() {
 //---------------------------------------------------------
 // INIT
 //---------------------------------------------------------
-
 document.addEventListener("DOMContentLoaded", () => {
     // Apply saved language
     const lang = localStorage.getItem("lang") || "en";
@@ -164,7 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
         "ev_price", "gas_price", "elec_price",
         "dist_day", "dist_week_extra", "dist_month_extra",
         "gas_fe", "ev_use",
-        "maint_gas", "maint_ev"
+        "maint_gas", "maint_ev",
+        // include inflation so it's formatted/sanitized and saved
+        "inflation"
     ];
 
     numericFields.forEach(id => {
